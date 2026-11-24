@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Export To Graphene</title>
+<meta name="description" content="Move your data from an old Android phone to GrapheneOS – offline and encrypted.">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1014;
+  --surface: #151a20;
+  --surface-2: #1c232b;
+  --line: #27303a;
+  --text: #e6eaef;
+  --muted: #9aa5b1;
+  --accent: #8fb6e8;
+  --accent-strong: #5d8fd0;
+  --warn: #f2b8a0;
+  --ok: #7fcf9b;
+  --radius: 18px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; }
+code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .9em; }
+code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+html[data-lang="en"] .pl, html[data-lang="pl"] .en { display: none !important; }
+
+header.nav {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+header.nav .wrap { display: flex; align-items: center; gap: 16px; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text); }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
+.nav-links { display: flex; gap: 20px; margin-left: auto; font-size: 15px; }
+.nav-links a { color: var(--muted); }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.lang {
+  display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex-shrink: 0;
+}
+.lang button {
+  background: none; border: 0; color: var(--muted); padding: 5px 12px; font: 600 13px Inter, sans-serif; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--accent); color: #0d1014; }
+
+.hero { padding-top: 72px; padding-bottom: 56px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+.eyebrow { font: 500 13px "JetBrains Mono", monospace; color: var(--accent); letter-spacing: .04em; text-transform: uppercase; }
+h1 { font-size: clamp(36px, 6vw, 58px); line-height: 1.05; letter-spacing: -.02em; margin: 14px 0 18px; }
+.lead { font-size: 19px; color: var(--muted); max-width: 34em; margin: 0 0 28px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px;
+  font-weight: 600; font-size: 15px; border: 1px solid var(--line); color: var(--text); background: var(--surface);
+}
+.btn:hover { text-decoration: none; border-color: var(--accent-strong); }
+.btn.primary { background: var(--accent); color: #0d1014; border-color: var(--accent); }
+.btn.primary:hover { background: #a7c6ee; }
+.btn svg { width: 18px; height: 18px; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.badge { font: 500 12.5px "JetBrains Mono", monospace; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.hero-shot { justify-self: center; position: relative; }
+.phone {
+  width: 290px; border-radius: 34px; border: 8px solid #222a33; background: #000; overflow: hidden;
+  box-shadow: 0 30px 80px -20px rgba(93, 143, 208, .35);
+}
+.hero-shot .phone + .phone { position: absolute; width: 230px; right: -90px; bottom: -30px; opacity: .9; }
+
+section { padding: 64px 0; border-top: 1px solid var(--line); }
+h2 { font-size: clamp(26px, 4vw, 36px); letter-spacing: -.01em; margin: 8px 0 12px; }
+.sub { color: var(--muted); max-width: 44em; margin: 0 0 36px; }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.card h3 { margin: 0 0 6px; font-size: 17px; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; }
+.ico { width: 38px; height: 38px; border-radius: 10px; background: var(--surface-2); display: grid; place-items: center; margin-bottom: 14px; color: var(--accent); }
+.ico svg { width: 20px; height: 20px; }
+
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: s; }
+.step { position: relative; padding-top: 44px; }
+.step::before {
+  counter-increment: s; content: counter(s);
+  position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: #0d1014; font-weight: 700; display: grid; place-items: center;
+}
+.step h3 { margin: 0 0 6px; font-size: 17px; }
+.step p { margin: 0; color: var(--muted); font-size: 15px; }
+
+.shots { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+.shots img { width: 220px; flex-shrink: 0; border-radius: 20px; border: 1px solid var(--line); scroll-snap-align: start; }
+
+.security { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.security .card p { font-size: 15px; }
+
+.trouble { display: grid; gap: 20px; }
+details.fix { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+details.fix[open] { border-color: #3a4756; }
+details.fix summary {
+  list-style: none; cursor: pointer; padding: 20px 22px; display: flex; gap: 14px; align-items: flex-start;
+}
+details.fix summary::-webkit-details-marker { display: none; }
+details.fix summary .tag { flex-shrink: 0; margin-top: 2px; width: 28px; height: 28px; border-radius: 8px; background: #3a2620; color: var(--warn); display: grid; place-items: center; }
+details.fix summary .tag svg { width: 16px; height: 16px; }
+details.fix summary h3 { margin: 0; font-size: 18px; }
+details.fix summary p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+details.fix summary .chev { margin-left: auto; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+details.fix[open] summary .chev { transform: rotate(180deg); }
+.fix-body { padding: 0 22px 24px; }
+.why { background: var(--surface-2); border-left: 3px solid var(--accent-strong); border-radius: 8px; padding: 12px 16px; color: var(--muted); font-size: 15px; margin: 0 0 22px; }
+.walk { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+.walk figure { margin: 0; }
+.walk img { border-radius: 16px; border: 1px solid var(--line); }
+.walk figcaption { font-size: 14.5px; margin-top: 10px; color: var(--text); }
+.walk figcaption b { color: var(--accent); font-family: "JetBrains Mono", monospace; margin-right: 6px; }
+.note { margin-top: 22px; padding: 14px 16px; border-radius: 12px; background: #16241c; border: 1px solid #24402f; color: #cfe9d8; font-size: 15px; }
+.note.warn { background: #2a1d18; border-color: #4a3027; color: #f3d6c9; }
+ol.plain { margin: 0; padding-left: 20px; color: var(--text); }
+ol.plain li { margin: 6px 0; }
+
+footer { border-top: 1px solid var(--line); padding: 36px 0 56px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding-top: 48px; }
+  .hero-shot { display: none; }
+  .grid, .steps { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+  .lang { margin-left: auto; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px; }
+  .grid, .steps, .security { grid-template-columns: 1fr; }
+  .walk { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero { padding-top: 40px; }
+  .shots img { width: 180px; }
+  details.fix summary { padding: 16px; }
+  .fix-body { padding: 0 16px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon.png" alt=""> Export To Graphene</a>
+    <nav class="nav-links">
+      <a href="#features"><span class="en">Features</span><span class="pl">Funkcje</span></a>
+      <a href="#how"><span class="en">How it works</span><span class="pl">Jak to działa</span></a>
+      <a href="#troubleshooting"><span class="en">Troubleshooting</span><span class="pl">Problemy</span></a>
+      <a href="https://github.com/blazejstosio/ETG">GitHub</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+      <button type="button" data-set="pl" aria-pressed="false">PL</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow"><span class="en">Android → GrapheneOS</span><span class="pl">Android → GrapheneOS</span></div>
+      <h1><span class="en">Move your phone to GrapheneOS without losing anything.</span><span class="pl">Przenieś telefon na GrapheneOS i nic nie strać.</span></h1>
+      <p class="lead">
+        <span class="en">ETG copies your contacts, messages, photos, chats, Wi-Fi networks, apps and settings from an old Android phone to GrapheneOS. Fully offline, no Google account, everything encrypted.</span>
+        <span class="pl">ETG przenosi kontakty, SMS-y, zdjęcia, czaty, sieci Wi-Fi, aplikacje i ustawienia ze starego Androida na GrapheneOS. W pełni offline, bez konta Google, wszystko szyfrowane.</span>
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/blazejstosio/ETG/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
+          <span class="en">Download APK</span><span class="pl">Pobierz APK</span>
+        </a>
+        <a class="btn" href="https://github.com/blazejstosio/ETG">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
+          <span class="en">Source code</span><span class="pl">Kod źródłowy</span>
+        </a>
+        <a class="btn" href="#troubleshooting">
+          <span class="en">Install blocked?</span><span class="pl">Instalacja zablokowana?</span>
+        </a>
+      </div>
+      <div class="badges">
+        <span class="badge">AGPL-3.0</span>
+        <span class="badge">Android 8+</span>
+        <span class="badge"><span class="en">no trackers</span><span class="pl">bez trackerów</span></span>
+        <span class="badge">AES-256-GCM</span>
+        <span class="badge"><span class="en">F-Droid: in review</span><span class="pl">F-Droid: w weryfikacji</span></span>
+      </div>
+    </div>
+    <div class="hero-shot">
+      <img class="phone" src="img/app-1.png" alt="ETG export screen">
+      <img class="phone" src="img/app-6.png" alt="ETG transfer screen">
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="eyebrow"><span class="en">What it moves</span><span class="pl">Co przenosi</span></div>
+      <h2><span class="en">Everything that matters, in one app.</span><span class="pl">Wszystko, co ważne, w jednej aplikacji.</span></h2>
+      <p class="sub"><span class="en">Pick exactly what to take with you – down to single apps, contacts or settings. If something can't be moved, ETG skips it, keeps going and tells you why at the end.</span><span class="pl">Wybierz dokładnie, co zabrać – nawet pojedyncze aplikacje, kontakty czy ustawienia. Jeśli czegoś nie da się przenieść, ETG to pomija, działa dalej i na końcu mówi dlaczego.</span></p>
+      <div class="grid">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+          <h3><span class="en">Contacts &amp; calendar</span><span class="pl">Kontakty i kalendarz</span></h3>
+          <p><span class="en">vCard with photos, events with reminders and repeats (iCalendar).</span><span class="pl">vCard ze zdjęciami, wydarzenia z przypomnieniami i powtórzeniami (iCalendar).</span></p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></div>
+          <h3><span class="en">SMS, MMS &amp; calls</span><span class="pl">SMS, MMS i połączenia</span></h3>
+          <p><span class="en">Messages, call history and blocked numbers.</span><span class="pl">Wiadomości, historia połączeń i zablokowane numery.</span></p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg></div>
+          <h3><span class="en">Photos &amp; files</span><span class="pl">Zdjęcia i pliki</span></h3>
+          <p><span class="en">Photos, videos, music, ringtones, documents and downloads.</span><span class="pl">Zdjęcia, filmy, muzyka, dzwonki, dokumenty i pobrane pliki.</span></p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5A8 8 0 1 1 21 12z"/></svg></div>
+          <h3><span class="en">Chat backups</span><span class="pl">Kopie czatów</span></h3>
+          <p>Signal, Molly, WhatsApp, Telegram, Element, Session, SimpleX, SinusChat.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+          <h3><span class="en">Passwords &amp; 2FA</span><span class="pl">Hasła i 2FA</span></h3>
+          <p><span class="en">KeePass, Aegis, 2FAS, Google Authenticator QR codes, VPN and SSH keys.</span><span class="pl">KeePass, Aegis, 2FAS, kody QR z Google Authenticator, klucze VPN i SSH.</span></p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg></div>
+          <h3><span class="en">Wi-Fi, apps &amp; settings</span><span class="pl">Wi-Fi, aplikacje i ustawienia</span></h3>
+          <p><span class="en">Saved networks, apps as APKs with FOSS alternatives, wallpaper, sounds, DNS and more.</span><span class="pl">Zapisane sieci, aplikacje jako APK z wolnymi alternatywami, tapeta, dźwięki, DNS i więcej.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="eyebrow"><span class="en">How it works</span><span class="pl">Jak to działa</span></div>
+      <h2><span class="en">Four steps, no cloud.</span><span class="pl">Cztery kroki, zero chmury.</span></h2>
+      <p class="sub"><span class="en">Install ETG on both phones. The built-in checklist walks you through the whole migration.</span><span class="pl">Zainstaluj ETG na obu telefonach. Wbudowana lista kroków przeprowadzi Cię przez całą migrację.</span></p>
+      <div class="steps">
+        <div class="step">
+          <h3><span class="en">Choose</span><span class="pl">Wybierz</span></h3>
+          <p><span class="en">On the old phone, tick what you want to take.</span><span class="pl">Na starym telefonie zaznacz, co chcesz zabrać.</span></p>
+        </div>
+        <div class="step">
+          <h3><span class="en">Encrypt</span><span class="pl">Zaszyfruj</span></h3>
+          <p><span class="en">ETG packs it into one encrypted <code>.etg</code> archive.</span><span class="pl">ETG pakuje wszystko do jednego zaszyfrowanego archiwum <code>.etg</code>.</span></p>
+        </div>
+        <div class="step">
+          <h3><span class="en">Move</span><span class="pl">Przenieś</span></h3>
+          <p><span class="en">Phone to phone over Wi-Fi (QR, NFC or code), USB cable, USB drive or SD card.</span><span class="pl">Telefon–telefon przez Wi-Fi (QR, NFC lub kod), kabel USB, pendrive albo kartę SD.</span></p>
+        </div>
+        <div class="step">
+          <h3><span class="en">Restore</span><span class="pl">Przywróć</span></h3>
+          <p><span class="en">On GrapheneOS, import it back – every file is checksum-verified.</span><span class="pl">Na GrapheneOS zaimportuj z powrotem – każdy plik jest sprawdzany sumą kontrolną.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow"><span class="en">Screenshots</span><span class="pl">Zrzuty ekranu</span></div>
+      <h2><span class="en">A look inside.</span><span class="pl">Zajrzyj do środka.</span></h2>
+      <div class="shots">
+        <img src="img/app-1.png" alt="Export" loading="lazy">
+        <img src="img/app-2.png" alt="Categories" loading="lazy">
+        <img src="img/app-3.png" alt="Settings" loading="lazy">
+        <img src="img/app-5.png" alt="Import" loading="lazy">
+        <img src="img/app-6.png" alt="Transfer" loading="lazy">
+        <img src="img/app-7.png" alt="Guide" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow"><span class="en">Security</span><span class="pl">Bezpieczeństwo</span></div>
+      <h2><span class="en">Your data never leaves your hands.</span><span class="pl">Twoje dane nie opuszczają Twoich rąk.</span></h2>
+      <div class="security">
+        <div class="card"><h3><span class="en">Strong encryption</span><span class="pl">Mocne szyfrowanie</span></h3><p><span class="en">AES-256-GCM with a key derived by PBKDF2-HMAC-SHA256 (210,000 iterations).</span><span class="pl">AES-256-GCM z kluczem z PBKDF2-HMAC-SHA256 (210 000 iteracji).</span></p></div>
+        <div class="card"><h3><span class="en">Safe phone-to-phone</span><span class="pl">Bezpieczny transfer</span></h3><p><span class="en">ECDH P-256 with a fresh key every session; the sending phone must approve the receiver.</span><span class="pl">ECDH P-256 z nowym kluczem w każdej sesji; telefon wysyłający musi zatwierdzić odbiorcę.</span></p></div>
+        <div class="card"><h3><span class="en">Verified restore</span><span class="pl">Weryfikacja przy przywracaniu</span></h3><p><span class="en">Every file carries a SHA-256 checksum that is checked on import.</span><span class="pl">Każdy plik ma sumę SHA-256 sprawdzaną przy imporcie.</span></p></div>
+        <div class="card"><h3><span class="en">Offline &amp; open source</span><span class="pl">Offline i open source</span></h3><p><span class="en">Network is used only between your own devices. No trackers, no analytics. AGPL-3.0.</span><span class="pl">Sieć służy tylko do połączenia Twoich urządzeń. Bez trackerów i analityki. AGPL-3.0.</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="troubleshooting">
+    <div class="wrap">
+      <div class="eyebrow"><span class="en">Troubleshooting</span><span class="pl">Rozwiązywanie problemów</span></div>
+      <h2><span class="en">Google is blocking ETG? Here's the fix.</span><span class="pl">Google blokuje ETG? Tak to naprawisz.</span></h2>
+      <p class="sub"><span class="en">These problems only happen on the <b>old phone with Google services</b>. ETG needs access to SMS and call logs to back them up, and Google treats every app from outside the Play Store with those permissions as suspicious. GrapheneOS doesn't do this.</span><span class="pl">Te problemy występują tylko na <b>starym telefonie z usługami Google</b>. ETG potrzebuje dostępu do SMS-ów i rejestru połączeń, żeby je skopiować, a Google uznaje każdą aplikację spoza Sklepu Play z takimi uprawnieniami za podejrzaną. Na GrapheneOS tego nie ma.</span></p>
+
+      <div class="trouble">
+        <details class="fix" open>
+          <summary>
+            <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5m0 3.5v.5"/><circle cx="12" cy="12" r="10"/></svg></span>
+            <span>
+              <h3>“App blocked to protect your device”</h3>
+              <p><span class="en">Google Play Protect stops the installation of the APK.</span><span class="pl">Google Play Protect blokuje instalację APK.</span></p>
+            </span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="fix-body">
+            <p class="why"><span class="en">Play Protect blocks sideloaded apps that request sensitive permissions (SMS, call log), no matter what the app actually does. You can pause it for one day – it turns back on automatically.</span><span class="pl">Play Protect blokuje instalowane ręcznie aplikacje, które proszą o wrażliwe uprawnienia (SMS, rejestr połączeń), niezależnie od tego, co robią. Możesz go wstrzymać na jeden dzień – włączy się sam z powrotem.</span></p>
+            <div class="walk">
+              <figure>
+                <img src="img/fix-blocked.png" alt="Play Protect blocked dialog" loading="lazy">
+                <figcaption><b>1</b><span class="en">Tap <b>OK</b> to close the warning.</span><span class="pl">Stuknij <b>OK</b>, żeby zamknąć ostrzeżenie.</span></figcaption>
+              </figure>
+              <figure>
+                <img src="img/fix-protect.png" alt="Play Protect screen" loading="lazy">
+                <figcaption><b>2</b><span class="en">Open <b>Play Store</b> → your profile picture → <b>Play Protect</b> → gear icon ⚙.</span><span class="pl">Otwórz <b>Sklep Play</b> → zdjęcie profilu → <b>Play Protect</b> → ikona zębatki ⚙.</span></figcaption>
+              </figure>
+              <figure>
+                <img src="img/fix-pause.png" alt="Pause app scanning dialog" loading="lazy">
+                <figcaption><b>3</b><span class="en">Switch off <b>Scan apps with Play Protect</b> and choose <b>Pause</b> (recommended).</span><span class="pl">Wyłącz <b>Skanuj aplikacje przy użyciu Play Protect</b> i wybierz <b>Wstrzymaj</b> (zalecane).</span></figcaption>
+              </figure>
+              <figure>
+                <img src="img/fix-settings.png" alt="Play Protect settings off" loading="lazy">
+                <figcaption><b>4</b><span class="en">Both switches are off. Now open the APK again and install ETG.</span><span class="pl">Oba przełączniki są wyłączone. Otwórz ponownie APK i zainstaluj ETG.</span></figcaption>
+              </figure>
+            </div>
+            <div class="note"><span class="en">Leave <b>Improve harmful app detection</b> off – otherwise the APK is uploaded to Google. Scanning returns on its own the next day, or you can turn it back on right after installing.</span><span class="pl">Zostaw <b>Ulepsz wykrywanie szkodliwych aplikacji</b> wyłączone – inaczej APK zostanie wysłany do Google. Skanowanie wróci samo następnego dnia, możesz też włączyć je od razu po instalacji.</span></div>
+          </div>
+        </details>
+
+        <details class="fix">
+          <summary>
+            <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5m0 3.5v.5"/><circle cx="12" cy="12" r="10"/></svg></span>
+            <span>
+              <h3>“App was denied access to SMS”</h3>
+              <p><span class="en">Android's “restricted settings” block SMS and call log permissions.</span><span class="pl">„Ustawienia z ograniczonym dostępem” Androida blokują uprawnienia do SMS i rejestru połączeń.</span></p>
+            </span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="fix-body">
+            <p class="why"><span class="en">Since Android 13, apps installed from a file can't get SMS or call log access until you unlock “restricted settings” for them. This is a one-time step.</span><span class="pl">Od Androida 13 aplikacje zainstalowane z pliku nie dostaną dostępu do SMS-ów ani rejestru połączeń, dopóki nie odblokujesz dla nich „ustawień z ograniczonym dostępem”. Robisz to tylko raz.</span></p>
+            <div class="walk">
+              <figure>
+                <img src="img/fix-sms.png" alt="Denied access to SMS dialog" loading="lazy">
+                <figcaption><b>1</b><span class="en">Tap <b>Close</b>.</span><span class="pl">Stuknij <b>Zamknij</b>.</span></figcaption>
+              </figure>
+              <figure>
+                <img src="img/fix-restricted.png" alt="App info with Allow restricted settings" loading="lazy">
+                <figcaption><b>2</b><span class="en">Go to <b>Settings → Apps → ETG</b>, tap <b>⋮</b> in the top-right corner and choose <b>Allow restricted settings</b>. Confirm with your PIN.</span><span class="pl">Wejdź w <b>Ustawienia → Aplikacje → ETG</b>, stuknij <b>⋮</b> w prawym górnym rogu i wybierz <b>Zezwól na ustawienia z ograniczonym dostępem</b>. Potwierdź PIN-em.</span></figcaption>
+              </figure>
+            </div>
+            <ol class="plain" style="margin-top:20px" start="3">
+              <li><span class="en">Return to ETG and tap the category again (e.g. SMS) – this time Android will ask for the permission normally.</span><span class="pl">Wróć do ETG i stuknij kategorię ponownie (np. SMS) – tym razem Android normalnie zapyta o uprawnienie.</span></li>
+              <li><span class="en">If the <b>⋮</b> menu doesn't show the option, first try to grant the permission once (so the warning appears), then check again.</span><span class="pl">Jeśli w menu <b>⋮</b> nie ma tej opcji, najpierw spróbuj raz nadać uprawnienie (żeby pojawiło się ostrzeżenie), a potem sprawdź ponownie.</span></li>
+            </ol>
+            <div class="note"><span class="en">Apps installed through an app store such as F-Droid usually don't hit this restriction.</span><span class="pl">Aplikacje instalowane przez sklep, np. F-Droid, zwykle nie mają tego ograniczenia.</span></div>
+          </div>
+        </details>
+
+        <details class="fix">
+          <summary>
+            <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5m0 3.5v.5"/><circle cx="12" cy="12" r="10"/></svg></span>
+            <span>
+              <h3><span class="en">Is the APK safe? How do I check it?</span><span class="pl">Czy APK jest bezpieczny? Jak to sprawdzić?</span></h3>
+              <p><span class="en">Verify the download before you turn off Play Protect.</span><span class="pl">Sprawdź pobrany plik, zanim wyłączysz Play Protect.</span></p>
+            </span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="fix-body">
+            <ol class="plain">
+              <li><span class="en">Download ETG only from the official <a href="https://github.com/blazejstosio/ETG/releases">GitHub Releases</a> page (or from F-Droid, once available).</span><span class="pl">Pobieraj ETG tylko z oficjalnej strony <a href="https://github.com/blazejstosio/ETG/releases">GitHub Releases</a> (albo z F-Droid, gdy będzie dostępny).</span></li>
+              <li><span class="en">Every release has a <code>.sha256</code> file next to the APK – compare it with the checksum of your download.</span><span class="pl">Przy każdym wydaniu obok APK jest plik <code>.sha256</code> – porównaj go z sumą kontrolną pobranego pliku.</span></li>
+              <li><span class="en">The APK is built automatically by GitHub Actions from the public source code.</span><span class="pl">APK jest budowany automatycznie przez GitHub Actions z publicznego kodu źródłowego.</span></li>
+            </ol>
+            <div class="note warn"><span class="en">The GitHub and F-Droid versions are signed with different keys. To switch between them, uninstall ETG first.</span><span class="pl">Wersje z GitHuba i F-Droid są podpisane różnymi kluczami. Żeby przejść z jednej na drugą, najpierw odinstaluj ETG.</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Błażej Stosio · <a href="https://github.com/blazejstosio/ETG/blob/main/LICENSE">AGPL-3.0</a></span>
+    <span><a href="https://github.com/blazejstosio/ETG">GitHub</a> · <a href="https://github.com/blazejstosio/ETG/issues"><span class="en">Report a bug</span><span class="pl">Zgłoś błąd</span></a> · <a href="https://grapheneos.org">GrapheneOS</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll('.lang button');
+  function apply(lang) {
+    root.setAttribute('data-lang', lang);
+    root.setAttribute('lang', lang);
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === lang)); });
+    try { localStorage.setItem('etg-lang', lang); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('etg-lang'); } catch (e) {}
+  apply(saved || ((navigator.language || '').toLowerCase().indexOf('pl') === 0 ? 'pl' : 'en'));
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.set); }); });
+})();
+</script>
+</body>
+</html>
