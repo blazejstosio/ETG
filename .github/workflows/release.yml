@@ -2,6 +2,10 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - app/build.gradle.kts
     tags:
       - "v*"
   workflow_dispatch:
@@ -13,29 +17,65 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          elif [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG="${GITHUB_REF_NAME}"
+          else
+            VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+            if [ -z "$VERSION" ]; then
+              echo "::error::versionName not found"
+              exit 1
+            fi
+            TAG="v$VERSION"
+            if git ls-remote --exit-code --tags origin "refs/tags/$TAG" > /dev/null; then
+              echo "Tag $TAG already exists, nothing to release"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - if: steps.tag.outputs.skip != 'true'
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.TAG }}
 
-      - uses: actions/setup-java@v4
+      - if: steps.tag.outputs.skip != 'true'
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - if: steps.tag.outputs.skip != 'true'
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build release APK
+        if: steps.tag.outputs.skip != 'true'
         run: |
           chmod +x gradlew
           ./gradlew --no-daemon :app:assembleRelease
 
       - name: Sign APK
+        if: steps.tag.outputs.skip != 'true'
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -63,6 +103,7 @@ jobs:
           echo "APK=$OUT" >> "$GITHUB_ENV"
 
       - name: Publish release
+        if: steps.tag.outputs.skip != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
