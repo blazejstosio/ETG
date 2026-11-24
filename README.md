@@ -2,6 +2,8 @@
 
 **ETG (Export To Graphene)** is a 100% FOSS, offline, zero-Google-Services Android migration application designed to export your personal data from a stock Android phone and cleanly restore it onto **GrapheneOS** (with an authentic Obsidian/Carbon GrapheneOS UI).
 
+**🌐 Strona / Website:** https://blazejstosio.github.io/ETG/ · **⬇️ APK:** [GitHub Releases](https://github.com/blazejstosio/ETG/releases/latest) · **🛡️ Google blokuje instalację? / Google blocks the install?** [Troubleshooting](https://blazejstosio.github.io/ETG/#troubleshooting)
+
 ---
 
 ## Co przenosi ETG? / What ETG Migrates
