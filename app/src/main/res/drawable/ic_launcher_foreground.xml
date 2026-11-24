@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.39"
+        android:pathData="M54.00,37.00 L68.72,45.50 M54.00,37.00 L54.00,26.29 M68.72,45.50 L68.72,62.50 M68.72,45.50 L78.00,40.14 M68.72,62.50 L54.00,71.00 M68.72,62.50 L78.00,67.86 M54.00,71.00 L39.28,62.50 M54.00,71.00 L54.00,81.71 M39.28,62.50 L39.28,45.50 M39.28,62.50 L30.00,67.86 M39.28,45.50 L54.00,37.00 M39.28,45.50 L30.00,40.15" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50.01,37.00a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z M64.73,45.50a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z M64.73,62.50a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z M50.01,71.00a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z M35.28,62.50a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z M35.28,45.50a3.99,3.99 0,1 1,7.99,0a3.99,3.99 0,1 1,-7.99,0Z" />
+</vector>

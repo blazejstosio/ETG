@@ -1,0 +1,34 @@
+<p><b>Export To Graphene (ETG)</b> przenosi Twoje dane ze starego telefonu z Androidem na <b>GrapheneOS</b>. Działa w pełni offline, bez usług Google i bez zakładania konta, a wszystko, co przenosi, szyfruje.</p>
+
+<p><b>Co przenosi</b></p>
+<ul>
+<li>Kontakty (vCard) ze zdjęciami</li>
+<li>SMS i MMS, historię połączeń i zablokowane numery</li>
+<li>Wydarzenia z kalendarza z przypomnieniami i powtórzeniami (iCalendar)</li>
+<li>Zdjęcia, filmy, muzykę, dzwonki, dokumenty i pobrane pliki</li>
+<li>Kopie czatów (Signal, Molly, WhatsApp, Telegram, Element, Session, SimpleX, SinusChat)</li>
+<li>Bazy KeePass, eksporty 2FA (Aegis, 2FAS…), kody QR z Google Authenticator, klucze VPN i SSH</li>
+<li>Zapisane sieci Wi-Fi (kody QR, WifiConfigStore.xml albo Shizuku)</li>
+<li>Zainstalowane aplikacje jako pliki APK, z podpowiedziami wolnych zamienników</li>
+<li>Ustawienia systemu: tapetę, dźwięki, ciemny motyw, animacje, prywatny DNS, tryb nawigacji, klawiaturę i więcej (część wymaga Shizuku)</li>
+</ul>
+
+<p><b>Jak przenosi</b></p>
+<ul>
+<li>Jeden zaszyfrowany plik kopii (.etg) w pamięci telefonu lub na karcie SD</li>
+<li>Bezpośrednio na pendrive (USB-OTG)</li>
+<li>Z telefonu na telefon przez Wi-Fi lub Wi-Fi Direct: zeskanuj kod QR, przyłóż telefony (NFC) albo wpisz krótki kod</li>
+<li>Przez kabel USB albo do pobrania na komputer w przeglądarce</li>
+</ul>
+
+<p><b>Bezpieczeństwo</b></p>
+<ul>
+<li>Szyfrowanie AES-256-GCM z kluczem wyprowadzanym przez PBKDF2-HMAC-SHA256 (210 000 iteracji)</li>
+<li>Przesyłanie między telefonami używa ECDH P-256 z nowym kluczem w każdej sesji, a telefon wysyłający musi zatwierdzić odbiorcę</li>
+<li>Każdy plik ma sumę kontrolną SHA-256 sprawdzaną przy przywracaniu</li>
+<li>Internet służy wyłącznie do lokalnego przesyłania między Twoimi urządzeniami – bez trackerów i bez analityki</li>
+</ul>
+
+<p>Możesz wybrać dokładnie, co przenieść, aż do pojedynczych aplikacji, kontaktów czy ustawień. Jeśli czegoś nie da się przenieść, ETG to pomija, działa dalej, a na końcu pokazuje, co się nie udało i dlaczego, z opcją ponowienia.</p>
+
+<p>Lista kroków prowadzi przez całą migrację: od zapisania kodów 2FA i kopii czatów, przez instalację GrapheneOS, po przywrócenie wszystkiego.</p>
